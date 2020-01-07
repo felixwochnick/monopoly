@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QGroupBox
+from PyQt5.QtWidgets import QLabel, QGridLayout, QGroupBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -12,11 +12,11 @@ class QPlayerGroupBox(QGroupBox):
         self.layout = QGridLayout()
 
         self.lblName = QLabel('Name:')
-        self.lblNameV = QLabel("game.players[0].name")
+        self.lblNameV = QLabel("")
         self.lblPosition = QLabel('Position:')
-        self.lblPositionV = QLabel("game.players[0].getPOSITION()")
+        self.lblPositionV = QLabel("")
         self.lblAsset = QLabel('Kapital:')
-        self.lblAssetV = QLabel(str("game.players[0].asset"))
+        self.lblAssetV = QLabel()
 
         self.layout.addWidget(self.lblName, 0, 0)
         self.layout.addWidget(self.lblNameV, 0, 1)

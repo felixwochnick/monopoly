@@ -1,7 +1,7 @@
 import sys
 import monpoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QGroupBox
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QGroupBox, QMessageBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -258,9 +258,29 @@ class UIstart(QWidget):
             self.lblPlayerName3.show()
             self.lePlayerName3.show()
 
+    def checkPlayerHaveNames(self):
+        if self.cboxPlayerNumber.currentText() == '2':
+            if self.lePlayerName0.text() == '' or self.lePlayerName1.text() == '':
+                return False
 
+        elif self.cboxPlayerNumber.currentText() == '3':
+            if self.lePlayerName0.text() == '' or self.lePlayerName1.text() == '' or self.lePlayerName2.text() == '':
+                return False
+
+        elif self.cboxPlayerNumber.currentText() == '4':
+            if self.lePlayerName0.text() == '' or self.lePlayerName1.text() == '' or self.lePlayerName2.text() == '' or self.lePlayerName3.text() == '':
+                return False
+
+        return True
 
     def startGame(self):
+        if not self.checkPlayerHaveNames():
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Critical)
+            msg.setText('Bitte geben sie die Namen für alle Spieler an!')
+            msg.setWindowTitle("Error")
+            msg.exec_()
+            return ''
         global uiMain, game
         game = Game(int(self.cboxPlayerNumber.currentText()), [self.lePlayerName0.text(), self.lePlayerName1.text(), self.lePlayerName2.text(), self.lePlayerName3.text()])
         uiMain = UImain()
@@ -286,11 +306,16 @@ class UImain(QWidget):
         self.layoutAction = QGridLayout()
 
         self.btnRoll = QPushButton('Würfeln', self)
+        self.btnRoll.setStyleSheet('QPushButton { background-color: black; color: white; }')
         self.btnBuy = QPushButton('Kaufen', self)
+        self.btnBuy.setStyleSheet('QPushButton { background-color: green; color: white; }')
         self.btnSell = QPushButton('Verkaufen', self)
+        self.btnSell.setStyleSheet('QPushButton { background-color: red; color: white; }')
         self.btnBuild = QPushButton('Baumenu', self)
         self.btnTrade = QPushButton('Handen', self)
+        self.btnTrade.setStyleSheet('QPushButton { background-color: orange; }')
         self.btnEnd = QPushButton('Zug beenden', self)
+        self.btnEnd.setStyleSheet('QPushButton { background-color: darkred; color: white; }')
 
         self.layoutAction.addWidget(self.btnRoll, 0, 0)
         self.layoutAction.addWidget(self.btnBuy, 1, 0)
@@ -320,10 +345,25 @@ class UImain(QWidget):
         self.layout = QGridLayout()
 
         self.layout.addLayout(self.layoutAction, 0, 0, 2, 1)
-        self.layout.addWidget(self.gbPlayer0, 0, 1)
-        self.layout.addWidget(self.gbPlayer1, 1, 1)
-        self.layout.addWidget(self.gbPlayer2, 0, 2)
-        self.layout.addWidget(self.gbPlayer3, 1, 2)
+
+        self.gbPlayers = []
+
+        x = 0
+        y = 1
+        z = 0
+        for player in game.players:
+            if x > 1:
+                x = 0
+                y += 1
+            self.gbPlayers.append(uiLib.QPlayerGroupBox(game.players[z].name))
+            self.layout.addWidget(self.gbPlayers[z], x, y)
+            z += 1
+            x += 1
+
+        # self.layout.addWidget(self.gbPlayer0, 0, 1)
+        # self.layout.addWidget(self.gbPlayer1, 1, 1)
+        # self.layout.addWidget(self.gbPlayer2, 0, 2)
+        # self.layout.addWidget(self.gbPlayer3, 1, 2)
 
         self.setLayout(self.layout)
 
@@ -331,9 +371,17 @@ class UImain(QWidget):
         self.btnRoll.clicked.connect(self.actionRoll)
         self.btnEnd.clicked.connect(self.actionEnd)
 
+
+    def updateUI(self):
+        pass
+
+
     def actionRoll(self):
-        self.ActivePlayer.move()
-        self.gbPlayer0.lblPositionV.setText(self.ActivePlayer.getPOSITION())
+        if not self.ActivePlayer.rolled:
+            cube1, cube2 = self.ActivePlayer.move()
+            if not cube1 == cube2:
+                self.ActivePlayer.rolled = True
+        self.updateUI()
 
     def actionEnd(self):
         game.changeActivePlayer()

@@ -15,6 +15,7 @@ class Player():
         self.asset = asset
         self.property = []
         self.position: int = 0
+        self.rolled = False
 
     def move(self):
         cube1 = random.randint(1, 6)
@@ -29,7 +30,7 @@ class Player():
             self.position += cube1 + cube2 - 52
             self.goOVERstart()
 
-        return True
+        return [cube1, cube2]
 
     def moveTo(self, position: int, direct: bool = False):
         self.position = position
