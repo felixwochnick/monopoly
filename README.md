@@ -1,5 +1,6 @@
 # Monopoly
 A Monopoly version with Python
 
-suported languages:
- German
+suported language: German
+
+used mudule: PyQt5 
