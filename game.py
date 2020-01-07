@@ -1,5 +1,6 @@
 import sys
 import monpoly
+import uiLib
 from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QGroupBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
@@ -300,24 +301,7 @@ class UImain(QWidget):
 
         # gbPlayer0
 
-        self.gbPlayer0 = QGroupBox('Player 0')
-        self.gbPlayer0_layout = QGridLayout()
-
-        self.gbPlayer0_lblName = QLabel('Name:')
-        self.gbPlayer0_lblNameV = QLabel(game.players[0].name)
-        self.gbPlayer0_lblPosition = QLabel('Position:')
-        self.gbPlayer0_lblPositionV = QLabel(game.players[0].getPOSITION())
-        self.gbPlayer0_lblAsset = QLabel('Kapital:')
-        self.gbPlayer0_lblAssetV = QLabel(str(game.players[0].asset))
-
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblName, 0, 0)
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblNameV, 0, 1)
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblPosition, 1, 0)
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblPositionV, 1, 1)
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblAsset, 2, 0)
-        self.gbPlayer0_layout.addWidget(self.gbPlayer0_lblAssetV, 2, 1)
-
-        self.gbPlayer0.setLayout(self.gbPlayer0_layout)
+        self.gbPlayer0 = uiLib.QPlayerGroupBox('Player 0')
 
         # gbPlayer1
 
@@ -349,7 +333,7 @@ class UImain(QWidget):
 
     def actionRoll(self):
         self.ActivePlayer.move()
-        self.gbPlayer0_lblPositionV.setText(self.ActivePlayer.getPOSITION())
+        self.gbPlayer0.lblPositionV.setText(self.ActivePlayer.getPOSITION())
 
     def actionEnd(self):
         game.changeActivePlayer()
