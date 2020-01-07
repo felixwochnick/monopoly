@@ -294,6 +294,7 @@ class UImain(QWidget):
         super().__init__()
         self.buildUI()
         self.initUI()
+        self.updateUI()
 
         self.ActivePlayer: monpoly.Player = game.getActivePlayer()
 
@@ -324,22 +325,6 @@ class UImain(QWidget):
         self.layoutAction.addWidget(self.btnTrade, 4, 0)
         self.layoutAction.addWidget(self.btnEnd, 5, 0)
 
-        # gbPlayer0
-
-        self.gbPlayer0 = uiLib.QPlayerGroupBox('Player 0')
-
-        # gbPlayer1
-
-        self.gbPlayer1 = QGroupBox('Player 1')
-
-        # gbPlayer2
-
-        self.gbPlayer2 = QGroupBox('Player 2')
-
-        # gbPlayer3
-
-        self.gbPlayer3 = QGroupBox('Player 3')
-
         # layout
 
         self.layout = QGridLayout()
@@ -360,29 +345,44 @@ class UImain(QWidget):
             z += 1
             x += 1
 
-        # self.layout.addWidget(self.gbPlayer0, 0, 1)
-        # self.layout.addWidget(self.gbPlayer1, 1, 1)
-        # self.layout.addWidget(self.gbPlayer2, 0, 2)
-        # self.layout.addWidget(self.gbPlayer3, 1, 2)
-
         self.setLayout(self.layout)
 
     def initUI(self):
         self.btnRoll.clicked.connect(self.actionRoll)
+        self.btnBuy.clicked.connect(self.actionBuy)
         self.btnEnd.clicked.connect(self.actionEnd)
 
 
     def updateUI(self):
-        pass
+        for player in game.players:
+            gbPlayerActive = self.gbPlayers[player.playerID]
+            gbPlayerActive.lblNameV.setText(player.name)
+            gbPlayerActive.lblPositionV.setText(player.getPOSITION())
+            gbPlayerActive.lblAssetV.setText(str(player.asset))
+            propertyStr = ''
+            for property in player.property:
+                propertyStr += ', ' + property.name
+            gbPlayerActive.lblPropertyV.setText(propertyStr)
 
 
     def actionRoll(self):
         if not self.ActivePlayer.rolled:
             cube1, cube2 = self.ActivePlayer.move()
-            if not cube1 == cube2:
-                self.ActivePlayer.rolled = True
+            # if not cube1 == cube2: # TODO: Pasch programieren
+            self.ActivePlayer.rolled = True
+            if game.map[self.ActivePlayer.position].isBought:
+                game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
+        self.updateUI()
+
+    def actionBuy(self):
+        if self.ActivePlayer.rolled:
+            if not game.map[self.ActivePlayer.position].isBought:
+                self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
+
         self.updateUI()
 
     def actionEnd(self):
-        game.changeActivePlayer()
-        self.ActivePlayer = game.getActivePlayer()
+        if self.ActivePlayer.rolled:
+            self.ActivePlayer.rolled = False
+            game.changeActivePlayer()
+            self.ActivePlayer = game.getActivePlayer()

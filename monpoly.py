@@ -176,6 +176,9 @@ class Factory(Field):
     def __init__(self, name: str, factoryGroup: FieldGroup, GroupPosition: int):
         super().__init__(name)
 
+        self.isBought: bool = False
+        self.owner: Player = None
+
 
 class MonneyActionField(Field):
     """docstring for MonneyField."""
