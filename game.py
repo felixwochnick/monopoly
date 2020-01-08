@@ -1,7 +1,7 @@
 import sys
 import monpoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QGroupBox, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -361,8 +361,9 @@ class UImain(QWidget):
             gbPlayerActive.lblAssetV.setText(str(player.asset))
             propertyStr = ''
             for property in player.property:
-                propertyStr += ', ' + property.name
+                propertyStr += property.name + ', '
             gbPlayerActive.lblPropertyV.setText(propertyStr)
+        # self.gbPlayers[0].lblNameV.setText(str(type(game.map[0])))
 
 
     def actionRoll(self):
@@ -370,14 +371,16 @@ class UImain(QWidget):
             cube1, cube2 = self.ActivePlayer.move()
             # if not cube1 == cube2: # TODO: Pasch programieren
             self.ActivePlayer.rolled = True
-            if game.map[self.ActivePlayer.position].isBought:
-                game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
+            if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
+                if game.map[self.ActivePlayer.position].isBought:
+                    game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
         self.updateUI()
 
     def actionBuy(self):
         if self.ActivePlayer.rolled:
-            if not game.map[self.ActivePlayer.position].isBought:
-                self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
+            if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
+                if not game.map[self.ActivePlayer.position].isBought:
+                    self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
 
         self.updateUI()
 

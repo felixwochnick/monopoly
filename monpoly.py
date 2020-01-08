@@ -84,6 +84,7 @@ class Field():
 
     def __init__(self, name: str):
         self.name = name
+        self.function = 'Field'
 
     def getSelf(self):
         return self
@@ -102,6 +103,8 @@ class Street(Field):
 
     def __init__(self, name: str, streetGroup: FieldGroup, GroupPosition: int, costs: int, rent: int, rentW1H: int, rentW2H: int, rentW3H: int, rentW4H: int, rentWH: int, costsTObuild: int, mortgage: int):
         super().__init__(name)
+        self.function = 'AbleToBuyField'
+
         self.costs = costs
 
         self.rent = rent
@@ -157,6 +160,8 @@ class TrainStation(Field):
 
     def __init__(self, name: str, trainStationGroup: FieldGroup, GroupPosition: int):
         super().__init__(name)
+        self.function = 'AbleToBuyField'
+
         self.costs: int = 200
         self.rent1: int = 25
         self.rent2: int = 50
@@ -175,8 +180,9 @@ class TrainStation(Field):
 class Factory(Field):
     def __init__(self, name: str, factoryGroup: FieldGroup, GroupPosition: int):
         super().__init__(name)
+        self.function = 'AbleToBuyField'
 
-        self.isBought: bool = False
+        self.isBought: bool = True
         self.owner: Player = None
 
 
@@ -185,6 +191,8 @@ class MonneyActionField(Field):
 
     def __init__(self, name: str, getMonney: int, loseMonney: int):
         super().__init__(name)
+        self.function = 'ActionField'
+
         self.getMonney = getMonney
         self.loseMonney = loseMonney
 
