@@ -1,7 +1,7 @@
 import sys
 import monpoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
@@ -318,6 +318,9 @@ class UImain(QWidget):
         self.btnTrade.setStyleSheet('QPushButton { background-color: orange; }')
         self.btnEnd = QPushButton('Zug beenden', self)
         self.btnEnd.setStyleSheet('QPushButton { background-color: darkred; color: white; }')
+        self.teLogger = QTextEdit(self)
+        self.teLogger.setReadOnly(True)
+        self.teLogger.setStyleSheet('QTextEdit { max-width: 300px; max-height: 400px }')
 
         self.layoutAction.addWidget(self.btnRoll, 0, 0)
         self.layoutAction.addWidget(self.btnBuy, 1, 0)
@@ -325,6 +328,7 @@ class UImain(QWidget):
         self.layoutAction.addWidget(self.btnBuild, 3, 0)
         self.layoutAction.addWidget(self.btnTrade, 4, 0)
         self.layoutAction.addWidget(self.btnEnd, 5, 0)
+        self.layoutAction.addWidget(self.teLogger, 6, 0)
 
         # layout
 
@@ -375,6 +379,7 @@ class UImain(QWidget):
             if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                 if game.map[self.ActivePlayer.position].isBought:
                     game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
+                    self.teLogger.setText(self.teLogger.toPlainText() + "\n'{}' zahlt an '{}' ${} Miete".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent)))
         self.updateUI()
 
     def actionBuy(self):
@@ -382,6 +387,7 @@ class UImain(QWidget):
             if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                 if not game.map[self.ActivePlayer.position].isBought:
                     self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
+                    self.teLogger.setText(self.teLogger.toPlainText() + "\n'{}' kauft {} für ${}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].name, game.map[self.ActivePlayer.position].costs))
 
         self.updateUI()
 
