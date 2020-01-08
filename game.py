@@ -297,6 +297,7 @@ class UImain(QWidget):
         self.updateUI()
 
         self.ActivePlayer: monpoly.Player = game.getActivePlayer()
+        self.gbPlayers[self.ActivePlayer.playerID].setStyleSheet('QGroupBox:title { background-color: #cacccc; }')
 
     def buildUI(self):
         self.setGeometry(100, 100, 1280, 720)
@@ -389,3 +390,9 @@ class UImain(QWidget):
             self.ActivePlayer.rolled = False
             game.changeActivePlayer()
             self.ActivePlayer = game.getActivePlayer()
+            for gb in self.gbPlayers:
+                gb.setStyleSheet('QGroupBox:tile { background-color: transparent; }')
+
+        self.gbPlayers[self.ActivePlayer.playerID].setStyleSheet('QGroupBox:title { background-color: #cacccc; }')
+
+        self.updateUI()

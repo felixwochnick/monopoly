@@ -13,6 +13,7 @@ class QPlayerGroupBox(QGroupBox):
 
         self.lblName = QLabel('Name:')
         self.lblNameV = QLabel("")
+
         self.lblPosition = QLabel('Position:')
         self.lblPositionV = QLabel("")
         self.lblAsset = QLabel('Kapital:')

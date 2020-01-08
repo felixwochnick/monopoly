@@ -16,6 +16,7 @@ class Player():
         self.property = []
         self.position: int = 0
         self.rolled = False
+        self.rolledInt = 0
 
     def move(self):
         cube1 = random.randint(1, 6)
@@ -29,6 +30,8 @@ class Player():
         else:
             self.position += cube1 + cube2 - 52
             self.goOVERstart()
+
+        self.rolledInt = cube1 + cube2
 
         return [cube1, cube2]
 
@@ -176,14 +179,47 @@ class TrainStation(Field):
         self.isBought: bool = False
         self.owner: Player = None
 
+    def updateRent(self):
+        return ''
+
+        if self.stageOFexpension == 1:
+            self.currentRent = self.rent * 2
+        elif self.stageOFexpension == 2:
+            self.currentRent = self.rent * 3
+        elif self.stageOFexpension == 3:
+            self.currentRent = self.rentW1H
+        elif self.stageOFexpension == 4:
+            self.currentRent = self.rentW2H
+        elif self.stageOFexpension == 5:
+            self.currentRent = self.rentW3H
+        elif self.stageOFexpension == 6:
+            self.currentRent = self.rentW4H
+        elif self.stageOFexpension == 3:
+            self.currentRent = self.rentWH
+
+    def payRent(self, player: Player):
+        self.updateRent()
+        self.owner.getMonney(self.currentRent)
+        player.loseMonney(self.currentRent)
+
 
 class Factory(Field):
     def __init__(self, name: str, factoryGroup: FieldGroup, GroupPosition: int):
         super().__init__(name)
         self.function = 'AbleToBuyField'
 
-        self.isBought: bool = True
+        self.costs: int = 150
+
+        self.factoryGroup = factoryGroup
+        self.GroupPosition = GroupPosition
+
+        self.isBought: bool = False
         self.owner: Player = None
+
+    def payRent(self, player: Player):
+        rent = player.rolledInt * 4
+        self.owner.getMonney(rent)
+        player.loseMonney(rent)
 
 
 class MonneyActionField(Field):
