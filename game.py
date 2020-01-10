@@ -62,7 +62,7 @@ class Game():
             monpoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
             monpoly.Factory('Gaswerk', gruppeWerk, 0),                                                          # Gaswerk
             monpoly.Street('Poststrasse', gruppeGrau, 2, 100, 6, 30, 90, 270, 400, 550, 50, 50),                # Poststrasse
-            monpoly.Street('Tiergartenstrasse', gruppeGrau, 2, 120, 8, 40, 100, 300, 450, 600, 50, 60),         # Tiergartenstrasse
+            monpoly.Street('Tiergartenstrasse', gruppeGrau, 3, 120, 8, 40, 100, 300, 450, 600, 50, 60),         # Tiergartenstrasse
 
             monpoly.Field('Nur zu Besuch'),                                                                     # Nur zu Besuch
 
