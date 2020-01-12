@@ -17,31 +17,35 @@ class Player():
         self.position: int = 0
         self.rolled = False
         self.rolledInt = 0
+        self.intoPrison = False
 
     def move(self):
         cube1 = random.randint(1, 6)
         cube2 = random.randint(1, 6)
+        event: str = None
 
-        if self.position + cube1 + cube2 <= 51:
+        if self.position + cube1 + cube2 <= 39:
             self.position += cube1 + cube2
-        elif self.position + cube1 + cube2 == 52:
+        elif self.position + cube1 + cube2 == 40:
             self.position = 0
             self.goONstart()
+            event = 'goONstart'
         else:
-            self.position += cube1 + cube2 - 52
+            self.position += cube1 + cube2 - 40
             self.goOVERstart()
+            event = 'goOVERstart'
 
         self.rolledInt = cube1 + cube2
 
-        return [cube1, cube2]
+        return [cube1, cube2, event]
 
     def moveTo(self, position: int, direct: bool = False):
-        self.position = position
-
-        if direct is True:
+        if direct is False and position < self.position:
             self.goOVERstart()
-        elif direct is True and position == 0:
+        elif position == 0:
             self.goONstart()
+
+        self.position = position
 
         return True
 
@@ -81,6 +85,14 @@ class Player():
             self.asset -= monney
             return True
 
+    def goINTOprison(self):
+        self.moveTo(10, True)
+        self.intoPrison = True
+
+    def becomeFree(self):
+        self.intoPrison = False
+        self.loseMonney(50)
+
 
 class Field():
     """Field class for Monopoly"""
@@ -96,7 +108,7 @@ class Field():
 class FieldGroup():
     """FieldGroup"""
 
-    def __init__(self, color: str, lenght: int = 4):
+    def __init__(self, color: str, lenght: int = 3):
         self.color = color
         self.owners = lenght * [None]
 
