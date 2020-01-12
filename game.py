@@ -167,7 +167,7 @@ class UIstart(QWidget):
         self.setGeometry(100, 100, 400, 600)
         self.setWindowTitle('Monpoly starten')
 
-        self.lblHeader = QLabel('Monpoly (v 0.1 Alpha)', self)
+        self.lblHeader = QLabel('Monpoly (Alpha)', self)
         self.lblHeader.setFont(QFont('Arial', 16))
         self.lblHeader.setAlignment(Qt.AlignTop)
 
