@@ -314,7 +314,7 @@ class UImain(QWidget):
         self.btnSell = QPushButton('Verkaufen', self)
         self.btnSell.setStyleSheet('QPushButton { background-color: red; color: white; }')
         self.btnBuild = QPushButton('Baumenu', self)
-        self.btnTrade = QPushButton('Handen', self)
+        self.btnTrade = QPushButton('Handeln', self)
         self.btnTrade.setStyleSheet('QPushButton { background-color: orange; }')
         self.btnEnd = QPushButton('Zug beenden', self)
         self.btnEnd.setStyleSheet('QPushButton { background-color: darkred; color: white; }')
@@ -374,12 +374,15 @@ class UImain(QWidget):
     def actionRoll(self):
         if not self.ActivePlayer.rolled:
             cube1, cube2 = self.ActivePlayer.move()
+            self.teLogger.setText("'{}' würfelt {} \n{}".format(self.ActivePlayer.name, str(cube1 + cube2), self.teLogger.toPlainText()))
             # if not cube1 == cube2: # TODO: Pasch programieren
             self.ActivePlayer.rolled = True
             if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                 if game.map[self.ActivePlayer.position].isBought:
                     game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
-                    self.teLogger.setText(self.teLogger.toPlainText() + "\n'{}' zahlt an '{}' ${} Miete".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent)))
+                    self.teLogger.setText("'{}' zahlt an '{}' ${} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent), self.teLogger.toPlainText()))
+            elif game.map[self.ActivePlayer.position].function == 'ActionField':
+                game.map[self.ActivePlayer.position].action(self.ActivePlayer)
         self.updateUI()
 
     def actionBuy(self):
@@ -387,13 +390,14 @@ class UImain(QWidget):
             if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                 if not game.map[self.ActivePlayer.position].isBought:
                     self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
-                    self.teLogger.setText(self.teLogger.toPlainText() + "\n'{}' kauft {} für ${}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].name, game.map[self.ActivePlayer.position].costs))
+                    self.teLogger.setText("'{}' kauft {} für ${} \n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].name, game.map[self.ActivePlayer.position].costs, self.teLogger.toPlainText()))
 
         self.updateUI()
 
     def actionEnd(self):
         if self.ActivePlayer.rolled:
             self.ActivePlayer.rolled = False
+            self.teLogger.setText("'{}' beendet den Zug\n{}".format(self.ActivePlayer.name, self.teLogger.toPlainText()))
             game.changeActivePlayer()
             self.ActivePlayer = game.getActivePlayer()
             for gb in self.gbPlayers:
