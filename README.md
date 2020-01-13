@@ -8,7 +8,7 @@ Required library: PyQt5
 suported language: German
 
 
-### Usage / Playing
+### Usage / Play
 
 This are commands mainly for Linux.
 
