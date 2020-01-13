@@ -422,6 +422,7 @@ class UImain(QWidget):
         self.ActivePlayer.becomeFree()
         self.gbPlayers[self.ActivePlayer.playerID].lblPrisonV.setText('Nein')
         self.teLogger.setText("'{}' ist wieder frei \n{}".format(self.ActivePlayer.name, self.teLogger.toPlainText()))
+
         self.updateUI()
 
     def actionEnd(self):

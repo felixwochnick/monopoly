@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+
 """
     Mainfile 'MONOPOLY.GAME'
 """

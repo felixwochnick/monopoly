@@ -1,0 +1,15 @@
+{
+  "ui-settings": {
+    "ui-main": {
+      "path": "./$infile"
+    }
+  },
+  "game-settings": {
+    "get-monney": {
+      "start-monney": 2000,
+      "over-go": 200,
+      "on-go": 400,
+      "parking-free": 0
+    }
+  }
+}

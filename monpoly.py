@@ -112,6 +112,12 @@ class FieldGroup():
         self.color = color
         self.owners = lenght * [None]
 
+    def haveSameOwners(self) -> bool:
+        if len(self.owners) == 3:
+            return self.owners[0] == self.owners[1] and self.owners[0] == self.owners[2]
+        else:
+            return self.owners[0] == self.owners[1]
+
 
 class Street(Field):
     """Street class for Monopoly"""
@@ -132,7 +138,7 @@ class Street(Field):
         self.currentRent = self.rent
 
         self.costsTObuild = costsTObuild
-        self.stageOFexpension: int = 0  # 0: less than 2*/3 streets; 1: 2*/3 streets; 2: 3*/4 streets; 3: 1 house; 4: 2 houses; 5: 3 houses; 6: 4 houses; 7: 1 hotel;   ||  *: 1st/last street group
+        self.stageOFexpension: int = 0  # 0: less than 2*/3 streets; 1: 2*/3 streets; 2: 1 house; 3: 2 houses; 4: 3 houses; 5: 4 houses; 6: 1 hotel;   ||  *: 1st/last street group & Factorys
 
         self.mortgage = mortgage
 
@@ -143,26 +149,33 @@ class Street(Field):
         self.owner: Player = None
 
     def upgrade(self):
-        self.stageOFexpension += 1
+        if self.streetGroup.haveSameOwners() and self.stageOFexpension <= 6:
+            self.stageOFexpension += 1
 
     def downgrade(self):
-        self.stageOFexpension -= 1
+        if (self.streetGroup.haveSameOwners() and self.stageOFexpension == 1) or self.stageOFexpension == 0:
+            pass
+        else:
+            self.stageOFexpension -= 1
 
     def updateRent(self):
-        if self.stageOFexpension == 1:
+        if self.streetGroup.haveSameOwners() and self.stageOFexpension == 0:
+            self.upgrade()
+
+        if self.stageOFexpension == 0:
+            self.currentRent = self.rent
+        elif self.stageOFexpension == 1:
             self.currentRent = self.rent * 2
-        elif self.stageOFexpension == 2:
-            self.currentRent = self.rent * 3
-        elif self.stageOFexpension == 3:
-            self.currentRent = self.rentW1H
-        elif self.stageOFexpension == 4:
-            self.currentRent = self.rentW2H
-        elif self.stageOFexpension == 5:
-            self.currentRent = self.rentW3H
-        elif self.stageOFexpension == 6:
-            self.currentRent = self.rentW4H
-        elif self.stageOFexpension == 3:
-            self.currentRent = self.rentWH
+        # elif self.stageOFexpension == 3:
+        #     self.currentRent = self.rentW1H
+        # elif self.stageOFexpension == 4:
+        #     self.currentRent = self.rentW2H
+        # elif self.stageOFexpension == 5:
+        #     self.currentRent = self.rentW3H
+        # elif self.stageOFexpension == 6:
+        #     self.currentRent = self.rentW4H
+        # elif self.stageOFexpension == 3:
+        #     self.currentRent = self.rentWH
 
     def payRent(self, player: Player):
         self.updateRent()
