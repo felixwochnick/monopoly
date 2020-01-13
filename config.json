@@ -1,4 +1,7 @@
 {
+  "application-info": {
+    "version": "0.0.32"
+  },
   "ui-settings": {
     "ui-main": {
       "path": "./$infile"

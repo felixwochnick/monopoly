@@ -2,7 +2,7 @@ import sys
 import monpoly
 import uiLib
 from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
 
@@ -356,8 +356,9 @@ class UImain(QWidget):
     def initUI(self):
         self.btnRoll.clicked.connect(self.actionRoll)
         self.btnBuy.clicked.connect(self.actionBuy)
-        self.btnEnd.clicked.connect(self.actionEnd)
         self.btnBecomeFree.clicked.connect(self.actionBecomeFree)
+        self.btnTrade.clicked.connect(self.actionTrade)
+        self.btnEnd.clicked.connect(self.actionEnd)
 
     def updateUI(self):
         for player in game.players:
@@ -425,6 +426,9 @@ class UImain(QWidget):
 
         self.updateUI()
 
+    def actionTrade(self):
+        self.uitrade = UItrade(self.ActivePlayer)
+
     def actionEnd(self):
         """Player's move ends"""
         if self.ActivePlayer.rolled or self.ActivePlayer.intoPrison:
@@ -438,3 +442,54 @@ class UImain(QWidget):
         self.gbPlayers[self.ActivePlayer.playerID].setStyleSheet('QGroupBox:title { background-color: #cacccc; }')
 
         self.updateUI()
+
+
+class UItrade(QWidget):
+    def __init__(self, ActivePlayer):
+        super().__init__()
+        self.ActivePlayer: monpoly.Player = ActivePlayer
+        self.playerList: list = game.players
+        self.playerList.pop(self.ActivePlayer.playerID)
+
+        self.buildUI()
+        self.initUI()
+        self.show()
+
+    def buildUI(self):
+        self.setGeometry(100, 100, 200, 400)
+        self.setWindowTitle('Handelsmenü')
+
+        self.lblActivePlayer = QLabel(self.ActivePlayer.name)
+
+        self.icoTrade = QLabel()
+        self.srcIconTrade = QPixmap("resources/icons/arrow.svg")
+        self.srcIconTrade = self.srcIconTrade.scaledToWidth(20)
+        self.srcIconTrade = self.srcIconTrade.scaledToHeight(20)
+        self.icoTrade.setPixmap(self.srcIconTrade)  # Icon made by Pixel perfect from www.flaticon.com
+
+
+        self.cboxSelectPlayer = QComboBox(self)
+        for player in self.playerList:
+            self.cboxSelectPlayer.addItem(player.name)
+
+        self.btnTrade = QPushButton('Handeln', self)
+        self.btnCancel = QPushButton('Abbrechen', self)
+
+        self.layout = QGridLayout()
+        self.layout.addWidget(self.lblActivePlayer, 0, 0, 1, 1)
+
+        self.layout.addWidget(self.icoTrade, 0, 1, 1, 1,)
+
+        self.layout.addWidget(self.cboxSelectPlayer, 0, 2, 1, 1)
+
+        self.layout.addWidget(self.btnTrade, 1, 0, 1, 1)
+        self.layout.addWidget(self.btnCancel, 1, 2, 1, 1)
+
+        self.setLayout(self.layout)
+
+    def initUI(self):
+        self.btnTrade.clicked.connect(self.actionCancel)
+        self.btnCancel.clicked.connect(self.actionCancel)
+
+    def actionCancel(self):
+        self.hide()
