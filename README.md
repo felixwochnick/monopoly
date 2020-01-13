@@ -10,7 +10,7 @@ suported language: German
 
 ### Usage / Play
 
-This are commands mainly for Linux.
+There are commands mainly for Linux.
 
 ```bash
 git clone https://github.com/quantcom-source/monopoly.git
@@ -18,3 +18,12 @@ cd monopoly
 python main.py
 ```
 > If 'python' not works, try 'python3'.
+
+
+### Install PyQt5
+
+There are commands mainly for Linux.
+
+```bash
+sudo pip install PyQt5
+```
