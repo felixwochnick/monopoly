@@ -448,7 +448,7 @@ class UItrade(QWidget):
     def __init__(self, ActivePlayer):
         super().__init__()
         self.ActivePlayer: monpoly.Player = ActivePlayer
-        self.playerList: list = game.players
+        self.playerList: list = game.players  # TODO: not same reference
         self.playerList.pop(self.ActivePlayer.playerID)
 
         self.buildUI()
