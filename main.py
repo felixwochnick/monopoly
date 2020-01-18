@@ -19,6 +19,9 @@ game: gameLib.Game
 app = QApplication(sys.argv)
 app.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
-uiStart = gameLib.UIstart()
+with open(file='./resources/style/UIstart.css') as file:
+    uiStartStyle = file.read()
+
+uiStart = gameLib.UIstart(uiStartStyle)
 
 sys.exit(app.exec_())

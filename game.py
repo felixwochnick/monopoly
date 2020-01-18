@@ -1,7 +1,7 @@
 import sys
 import monpoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit, QListWidget
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
@@ -154,13 +154,14 @@ class Game():
 
 class UIstart(QWidget):
 
-    def __init__(self):
+    def __init__(self, styleText: str):
         super().__init__()
 
         self.buildUI()
         self.initUI()
         self.changePlayerNumber()
 
+        self.setStyleSheet(styleText)
         self.show()
 
     def buildUI(self):
@@ -448,16 +449,24 @@ class UItrade(QWidget):
     def __init__(self, ActivePlayer):
         super().__init__()
         self.ActivePlayer: monpoly.Player = ActivePlayer
-        self.playerList: list = game.players  # TODO: not same reference
+
+        self.playerList: list = []
+        for player in game.players:
+            self.playerList.append(player)
         self.playerList.pop(self.ActivePlayer.playerID)
+
+        self.listPlayerLeft = ['$200', 'Schlossallee']
+        self.listPlayerRight = ['$400']
 
         self.buildUI()
         self.initUI()
         self.show()
 
     def buildUI(self):
-        self.setGeometry(100, 100, 200, 400)
+        self.setGeometry(100, 100, 400, 400)
         self.setWindowTitle('Handelsmenü')
+
+        # layout
 
         self.lblActivePlayer = QLabel(self.ActivePlayer.name)
 
@@ -472,24 +481,70 @@ class UItrade(QWidget):
         for player in self.playerList:
             self.cboxSelectPlayer.addItem(player.name)
 
+        self.btnPlayerLeftAdd = QPushButton('+', self)
+        self.btnPlayerLeftRemove = QPushButton('-', self)
+
+        self.btnPlayerRightAdd = QPushButton('+', self)
+        self.btnPlayerRightRemove = QPushButton('-', self)
+
+        self.lwPlayerLeft = QListWidget()
+        self.lwPlayerRight = QListWidget()
+
         self.btnTrade = QPushButton('Handeln', self)
         self.btnCancel = QPushButton('Abbrechen', self)
 
         self.layout = QGridLayout()
-        self.layout.addWidget(self.lblActivePlayer, 0, 0, 1, 1)
+        self.layout.addWidget(self.lblActivePlayer, 0, 0, 1, 2)
 
-        self.layout.addWidget(self.icoTrade, 0, 1, 1, 1,)
+        self.layout.addWidget(self.icoTrade, 0, 2, 1, 1,)
 
-        self.layout.addWidget(self.cboxSelectPlayer, 0, 2, 1, 1)
+        self.layout.addWidget(self.cboxSelectPlayer, 0, 3, 1, 2)
 
-        self.layout.addWidget(self.btnTrade, 1, 0, 1, 1)
-        self.layout.addWidget(self.btnCancel, 1, 2, 1, 1)
+        self.layout.addWidget(self.btnPlayerLeftAdd, 1, 0, 1, 1)
+        self.layout.addWidget(self.btnPlayerLeftRemove, 1, 1, 1, 1)
+
+        self.layout.addWidget(self.btnPlayerRightAdd, 1, 3, 1, 1)
+        self.layout.addWidget(self.btnPlayerRightRemove, 1, 4, 1, 1)
+
+        self.layout.addWidget(self.lwPlayerLeft, 2, 0, 1, 2)
+        self.layout.addWidget(self.lwPlayerRight, 2, 3, 1, 2)
+
+        self.layout.addWidget(self.btnTrade, 3, 0, 1, 2)
+        self.layout.addWidget(self.btnCancel, 3, 3, 1, 2)
 
         self.setLayout(self.layout)
 
     def initUI(self):
-        self.btnTrade.clicked.connect(self.actionCancel)
+        self.btnPlayerLeftAdd.clicked.connect(self.actionPlayerLeftAdd)
+        self.btnPlayerRightAdd.clicked.connect(self.actionPlayerRightAdd)
+        self.btnPlayerLeftRemove.clicked.connect(self.actionPlayerLeftRemove)
+        self.btnPlayerRightRemove.clicked.connect(self.actionPlayerRightRemove)
+
+        self.btnTrade.clicked.connect(self.actionTrade)
         self.btnCancel.clicked.connect(self.actionCancel)
+
+
+        self.lwPlayerLeft.addItems(self.listPlayerLeft)
+        self.lwPlayerRight.addItems(self.listPlayerRight)
+
+    def actionPlayerLeftAdd(self):
+        pass
+
+    def actionPlayerLeftRemove(self):
+        self.listPlayerLeft.remove(self.lwPlayerLeft.currentItem().text())
+        self.lwPlayerLeft.clear()
+        self.lwPlayerLeft.addItems(self.listPlayerLeft)
+
+    def actionPlayerRightAdd(self):
+        pass
+
+    def actionPlayerRightRemove(self):
+        self.listPlayerRight.remove(self.lwPlayerRight.currentItem().text())
+        self.lwPlayerRight.clear()
+        self.lwPlayerRight.addItems(self.listPlayerRight)
+
+    def actionTrade(self):
+        self.hide()
 
     def actionCancel(self):
         self.hide()
