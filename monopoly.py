@@ -61,6 +61,7 @@ class Player():
             self.property.append(street)
             street.isBought = True
             street.owner = self
+            street.updateGroup()
             return True
         else:
             return False
@@ -115,8 +116,19 @@ class FieldGroup():
     def haveSameOwners(self) -> bool:
         if len(self.owners) == 3:
             return self.owners[0] == self.owners[1] and self.owners[0] == self.owners[2]
+        elif len(self.owners) == 4:
+            return self.owners[0] == self.owners[1] and self.owners[0] == self.owners[2] and self.owners[0] == self.owners[3]
         else:
             return self.owners[0] == self.owners[1]
+
+    def howMannySameOwner(self, owner: Player) -> int:
+        x = 0
+
+        for person in self.owners:
+            if person == owner:
+                x += 1
+
+        return x
 
 
 class Street(Field):
@@ -177,6 +189,9 @@ class Street(Field):
         # elif self.stageOFexpension == 3:
         #     self.currentRent = self.rentWH
 
+    def updateGroup(self):
+        self.streetGroup.owners[self.GroupPosition] = self.owner
+
     def payRent(self, player: Player):
         self.updateRent()
         self.owner.getMonney(self.currentRent)
@@ -198,29 +213,26 @@ class TrainStation(Field):
 
         self.currentRent = self.rent1
 
-        self.trainStationGroup = trainStationGroup
+        self.streetGroup = trainStationGroup
         self.GroupPosition = GroupPosition
 
         self.isBought: bool = False
         self.owner: Player = None
 
     def updateRent(self):
-        return ''
+        numberOFtrainstations = self.streetGroup.howMannySameOwner(self.owner)
 
-        if self.stageOFexpension == 1:
-            self.currentRent = self.rent * 2
-        elif self.stageOFexpension == 2:
-            self.currentRent = self.rent * 3
-        elif self.stageOFexpension == 3:
-            self.currentRent = self.rentW1H
-        elif self.stageOFexpension == 4:
-            self.currentRent = self.rentW2H
-        elif self.stageOFexpension == 5:
-            self.currentRent = self.rentW3H
-        elif self.stageOFexpension == 6:
-            self.currentRent = self.rentW4H
-        elif self.stageOFexpension == 3:
-            self.currentRent = self.rentWH
+        if numberOFtrainstations == 1:
+            self.currentRent = self.rent1
+        elif numberOFtrainstations == 2:
+            self.currentRent = self.rent2
+        elif numberOFtrainstations == 3:
+            self.currentRent = self.rent3
+        elif numberOFtrainstations == 4:
+            self.currentRent = self.rent4
+
+    def updateGroup(self):
+        self.streetGroup.owners[self.GroupPosition] = self.owner
 
     def payRent(self, player: Player):
         self.updateRent()
@@ -235,11 +247,15 @@ class Factory(Field):
 
         self.costs: int = 150
 
-        self.factoryGroup = factoryGroup
+        self.streetGroup = factoryGroup
         self.GroupPosition = GroupPosition
 
         self.isBought: bool = False
         self.owner: Player = None
+
+    def updateGroup(self):
+        pass
+        # self.streetGroup.owners[self.GroupPosition] = self.owner
 
     def payRent(self, player: Player):
         rent = player.rolledInt * 4
