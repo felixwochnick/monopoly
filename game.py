@@ -1,13 +1,13 @@
 import sys
-import monpoly
+import monopoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit
-from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit, QListWidget
+from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
 
 
-class DisplayPlayer(monpoly.Player):
+class DisplayPlayer(monopoly.Player):
     def __init__(self, name: str, playerID: int):
         super().__init__(name, playerID)
 
@@ -27,99 +27,99 @@ class Game():
 
     def __init__(self, numberOFplayers: int, nameOFplayers: list):
         self.players = []
-        self.ActivePlayer: monpoly.Player
+        self.ActivePlayer: monopoly.Player
 
         while len(self.players) < numberOFplayers:
             self.players.append(DisplayPlayer(nameOFplayers[len(self.players)], len(self.players)))
 
         self.ActivePlayer = self.players[0]
 
-        gruppeBraun = monpoly.FieldGroup('braun', 2)
-        gruppeGrau = monpoly.FieldGroup('grau')
-        gruppePink = monpoly.FieldGroup('pink')
-        gruppeOrange = monpoly.FieldGroup('orange')
-        gruppeRot = monpoly.FieldGroup('rot')
-        gruppeGelb = monpoly.FieldGroup('gelb')
-        gruppeGrün = monpoly.FieldGroup('grün')
-        gruppeBlau = monpoly.FieldGroup('blau', 2)
+        gruppeBraun = monopoly.FieldGroup('#65250d', 2)
+        gruppeGrau = monopoly.FieldGroup('#728bbb')
+        gruppePink = monopoly.FieldGroup('#ea00fb')
+        gruppeOrange = monopoly.FieldGroup('#f37c05')
+        gruppeRot = monopoly.FieldGroup('#ea0d0d')
+        gruppeGelb = monopoly.FieldGroup('#d9dc0b')
+        gruppeGrün = monopoly.FieldGroup('#0bc508')
+        gruppeBlau = monopoly.FieldGroup('#0878e8', 2)
 
-        gruppeWerk = monpoly.FieldGroup('weiß', 2)
-        gruppeBahnhof = monpoly.FieldGroup('weiß')
+        gruppeWerk = monopoly.FieldGroup('#737373', 2)
+        gruppeBahnhof = monopoly.FieldGroup('#bfbebe', 4)
 
         self.map = [
-            monpoly.Field('Los'),                                                                               # Los Feld
+            monopoly.Field('Los'),                                                                               # Los Feld
 
-            monpoly.Street('Badstrasse', gruppeBraun, 0, 60, 2, 10, 30, 90, 160, 250, 50, 30),                  # Badstrasse
-            monpoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
-            monpoly.Street('Turmstrasse', gruppeBraun, 1, 60, 4, 20, 60, 180, 320, 450, 50, 30),                # Turmstrasse
-            # monpoly.Street('Stadionstrasse', gruppeBraun, 2, 80, 5, 30, 80, 240, 360, 500, 50, 40),             # Stadionstrasse
-            monpoly.MonneyActionField('Einkommenssteuer Feld', 0, 200),                                         # Einkommenssteuer Feld
+            monopoly.Street('Badstrasse', gruppeBraun, 0, 60, 2, 10, 30, 90, 160, 250, 50, 30),                  # Badstrasse
+            monopoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
+            monopoly.Street('Turmstrasse', gruppeBraun, 1, 60, 4, 20, 60, 180, 320, 450, 50, 30),                # Turmstrasse
+            # monopoly.Street('Stadionstrasse', gruppeBraun, 2, 80, 5, 30, 80, 240, 360, 500, 50, 40),             # Stadionstrasse
+            monopoly.MonneyActionField('Einkommenssteuer Feld', 0, 200),                                         # Einkommenssteuer Feld
 
-            monpoly.TrainStation('Südbahnhof', gruppeBahnhof, 0),                                               # Südbahnhof
+            monopoly.TrainStation('Südbahnhof', gruppeBahnhof, 0),                                               # Südbahnhof
 
-            monpoly.Street('Chausseestrasse', gruppeGrau, 0, 100, 6, 30, 90, 270, 400, 550, 50, 50),            # Chausseestrasse
-            monpoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
-            monpoly.Street('Elisenstrasse', gruppeGrau, 1, 100, 6, 30, 90, 270, 400, 550, 50, 50),              # Elisenstrasse
-            # monpoly.Factory('Gaswerk', gruppeWerk, 0),                                                          # Gaswerk
-            monpoly.Street('Poststrasse', gruppeGrau, 2, 100, 6, 30, 90, 270, 400, 550, 50, 50),                # Poststrasse
-            # monpoly.Street('Tiergartenstrasse', gruppeGrau, 3, 120, 8, 40, 100, 300, 450, 600, 50, 60),         # Tiergartenstrasse
+            monopoly.Street('Chausseestrasse', gruppeGrau, 0, 100, 6, 30, 90, 270, 400, 550, 50, 50),            # Chausseestrasse
+            monopoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
+            monopoly.Street('Elisenstrasse', gruppeGrau, 1, 100, 6, 30, 90, 270, 400, 550, 50, 50),              # Elisenstrasse
+            # monopoly.Factory('Gaswerk', gruppeWerk, 0),                                                          # Gaswerk
+            monopoly.Street('Poststrasse', gruppeGrau, 2, 100, 6, 30, 90, 270, 400, 550, 50, 50),                # Poststrasse
+            # monopoly.Street('Tiergartenstrasse', gruppeGrau, 3, 120, 8, 40, 100, 300, 450, 600, 50, 60),         # Tiergartenstrasse
 
-            monpoly.Field('Nur zu Besuch'),                                                                     # Nur zu Besuch
+            monopoly.Field('Nur zu Besuch'),                                                                     # Nur zu Besuch
 
-            # monpoly.Field('Auktion'),                                                                           # Aktion
-            monpoly.Street('Seestrasse', gruppePink, 0, 140, 10, 50, 150, 450, 625, 750, 100, 70),              # Seestrasse
-            monpoly.Factory('Elektrizitätswerk', gruppeWerk, 0),                                                # Elektrizitätswerk
-            monpoly.Street('Hafenstrasse', gruppePink, 1, 140, 10, 50, 150, 450, 625, 750, 100, 70),            # Hafenstrasse
-            monpoly.Street('Neue Strasse', gruppePink, 2, 140, 10, 50, 150, 450, 625, 750, 100, 70),            # Neue Strasse
-            # monpoly.Street('Marktplatz', gruppePink, 3, 160, 12, 60, 180, 500, 700, 900, 100, 80),              # Marktplatz
+            # monopoly.Field('Auktion'),                                                                           # Aktion
+            monopoly.Street('Seestrasse', gruppePink, 0, 140, 10, 50, 150, 450, 625, 750, 100, 70),              # Seestrasse
+            monopoly.Factory('Elektrizitätswerk', gruppeWerk, 0),                                                # Elektrizitätswerk
+            monopoly.Street('Hafenstrasse', gruppePink, 1, 140, 10, 50, 150, 450, 625, 750, 100, 70),            # Hafenstrasse
+            monopoly.Street('Neue Strasse', gruppePink, 2, 140, 10, 50, 150, 450, 625, 750, 100, 70),            # Neue Strasse
+            # monopoly.Street('Marktplatz', gruppePink, 3, 160, 12, 60, 180, 500, 700, 900, 100, 80),              # Marktplatz
 
-            monpoly.TrainStation('Westbahnhof', gruppeBahnhof, 1),                                              # Westbahnhof
+            monopoly.TrainStation('Westbahnhof', gruppeBahnhof, 1),                                              # Westbahnhof
 
-            monpoly.Street('Münchner Strasse', gruppeOrange, 0, 180, 14, 70, 200, 550, 750, 950, 100, 90),      # Münchner Strasse
-            monpoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
-            monpoly.Street('Wiener Strasse', gruppeOrange, 1, 180, 14, 70, 200, 550, 750, 950, 100, 90),        # Wiener Strasse
-            monpoly.Street('Berliner Strasse', gruppeOrange, 2, 200, 16, 80, 220, 600, 800, 1000, 100, 100),    # Berliner Strasse
-            # monpoly.Street('Hamburger Strasse', gruppeOrange, 3, 200, 16, 80, 220, 600, 800, 1000, 100, 100),   # Hamburger Strasse
+            monopoly.Street('Münchner Strasse', gruppeOrange, 0, 180, 14, 70, 200, 550, 750, 950, 100, 90),      # Münchner Strasse
+            monopoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
+            monopoly.Street('Wiener Strasse', gruppeOrange, 1, 180, 14, 70, 200, 550, 750, 950, 100, 90),        # Wiener Strasse
+            monopoly.Street('Berliner Strasse', gruppeOrange, 2, 200, 16, 80, 220, 600, 800, 1000, 100, 100),    # Berliner Strasse
+            # monopoly.Street('Hamburger Strasse', gruppeOrange, 3, 200, 16, 80, 220, 600, 800, 1000, 100, 100),   # Hamburger Strasse
 
-            monpoly.Field('Frei Parken'),                                                                       # Frei Parken
+            monopoly.Field('Frei Parken'),                                                                       # Frei Parken
 
-            monpoly.Street('Theaterstrasse', gruppeRot, 0, 220, 18, 90, 250, 700, 875, 1050, 150, 100),         # Theaterstrasse
-            monpoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
-            monpoly.Street('Museumstrasse', gruppeRot, 1, 220, 18, 90, 250, 700, 875, 1050, 150, 100),          # Museumstrasse
-            monpoly.Street('Opernplatz', gruppeRot, 2, 240, 20, 100, 300, 750, 925, 1100, 150, 120),            # Opernplatz
-            # monpoly.Street('Konzerthausstrasse', gruppeRot, 3, 240, 20, 100, 300, 750, 925, 1100, 150, 120),    # Konzerthausstrasse
+            monopoly.Street('Theaterstrasse', gruppeRot, 0, 220, 18, 90, 250, 700, 875, 1050, 150, 100),         # Theaterstrasse
+            monopoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
+            monopoly.Street('Museumstrasse', gruppeRot, 1, 220, 18, 90, 250, 700, 875, 1050, 150, 100),          # Museumstrasse
+            monopoly.Street('Opernplatz', gruppeRot, 2, 240, 20, 100, 300, 750, 925, 1100, 150, 120),            # Opernplatz
+            # monopoly.Street('Konzerthausstrasse', gruppeRot, 3, 240, 20, 100, 300, 750, 925, 1100, 150, 120),    # Konzerthausstrasse
 
-            # monpoly.Field('Bus'),                                                                               # Bus
-            monpoly.TrainStation('Nordbahnhof', gruppeBahnhof, 2),                                              # Nordbahnhof
+            # monopoly.Field('Bus'),                                                                               # Bus
+            monopoly.TrainStation('Nordbahnhof', gruppeBahnhof, 2),                                              # Nordbahnhof
 
-            monpoly.Street('Lessingstrasse', gruppeGelb, 0, 260, 22, 110, 330, 800, 975, 1150, 150, 130),       # Lessingstrasse
-            monpoly.Street('Schillerstrasse', gruppeGelb, 1, 260, 22, 110, 330, 800, 975, 1150, 150, 130),      # Schillerstrasse
-            monpoly.Factory('Wasserwerk', gruppeWerk, 1),                                                       # Wasserwerk
-            monpoly.Street('Goethestrasse', gruppeGelb, 2, 280, 24, 120, 360, 850, 1025, 1200, 150, 140),       # Goethestrasse
-            # monpoly.Street('Rilkestrasse', gruppeGelb, 3, 280, 24, 120, 360, 850, 1025, 1200, 150, 140),        # Rilkestrasse
+            monopoly.Street('Lessingstrasse', gruppeGelb, 0, 260, 22, 110, 330, 800, 975, 1150, 150, 130),       # Lessingstrasse
+            monopoly.Street('Schillerstrasse', gruppeGelb, 1, 260, 22, 110, 330, 800, 975, 1150, 150, 130),      # Schillerstrasse
+            monopoly.Factory('Wasserwerk', gruppeWerk, 1),                                                       # Wasserwerk
+            monopoly.Street('Goethestrasse', gruppeGelb, 2, 280, 24, 120, 360, 850, 1025, 1200, 150, 140),       # Goethestrasse
+            # monopoly.Street('Rilkestrasse', gruppeGelb, 3, 280, 24, 120, 360, 850, 1025, 1200, 150, 140),        # Rilkestrasse
 
-            monpoly.Field('Gefängnis'),                                                                         # Gefängnis
+            monopoly.Field('Gefängnis'),                                                                         # Gefängnis
 
-            monpoly.Street('Rathausplatz', gruppeGrün, 0, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),        # Rathausplatz
-            monpoly.Street('Hauptstrasse', gruppeGrün, 1, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),        # Hauptstrasse
-            # monpoly.Street('Börsenplatz', gruppeGrün, 2, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),         # Börsenplatz
-            monpoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
-            monpoly.Street('Bahnhofstraße', gruppeGrün, 2, 320, 28, 150, 450, 1000, 1200, 1400, 200, 160),      # Bahnhofstraße
+            monopoly.Street('Rathausplatz', gruppeGrün, 0, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),        # Rathausplatz
+            monopoly.Street('Hauptstrasse', gruppeGrün, 1, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),        # Hauptstrasse
+            # monopoly.Street('Börsenplatz', gruppeGrün, 2, 300, 26, 130, 390, 900, 1100, 1275, 200, 150),         # Börsenplatz
+            monopoly.Field('Gemeinschaftsfeld'),                                                                 # Gemeinschaftsfeld
+            monopoly.Street('Bahnhofstraße', gruppeGrün, 2, 320, 28, 150, 450, 1000, 1200, 1400, 200, 160),      # Bahnhofstraße
 
-            monpoly.TrainStation('Hauptbahnhof', gruppeBahnhof, 3),                                             # Hauptbahnhof
-            monpoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
+            monopoly.TrainStation('Hauptbahnhof', gruppeBahnhof, 3),                                             # Hauptbahnhof
+            monopoly.Field('Ereignisfeld'),                                                                      # Ereignisfeld
 
-            # monpoly.MonneyActionField('Geburtstaggeschenk', 100, 0),                                            # Geburtstaggeschenk
-            # monpoly.Street('Domplatz', gruppeBlau, 0, 350, 35, 175, 500, 1100, 1300, 1500, 200, 175),           # Domplatz
-            monpoly.Street('Parkstrasse', gruppeBlau, 0, 350, 35, 175, 500, 1100, 1300, 1500, 200, 175),        # Parkstrasse
-            monpoly.MonneyActionField('Zusatzsteuer', 0, 75),                                                   # Zusatzsteuer
-            monpoly.Street('Schlossallee', gruppeBlau, 1, 400, 50, 200, 600, 1400, 1700, 2000, 200, 200),       # Schlossallee
+            # monopoly.MonneyActionField('Geburtstaggeschenk', 100, 0),                                            # Geburtstaggeschenk
+            # monopoly.Street('Domplatz', gruppeBlau, 0, 350, 35, 175, 500, 1100, 1300, 1500, 200, 175),           # Domplatz
+            monopoly.Street('Parkstrasse', gruppeBlau, 0, 350, 35, 175, 500, 1100, 1300, 1500, 200, 175),        # Parkstrasse
+            monopoly.MonneyActionField('Zusatzsteuer', 0, 75),                                                   # Zusatzsteuer
+            monopoly.Street('Schlossallee', gruppeBlau, 1, 400, 50, 200, 600, 1400, 1700, 2000, 200, 200),       # Schlossallee
         ]
 
     def mainLoop(self):
         for player in self.players:
             player.move()
-            if type(self.map[player.position]) == monpoly.Street or type(self.map[player.position]) == monpoly.TrainStation:
+            if type(self.map[player.position]) == monopoly.Street or type(self.map[player.position]) == monopoly.TrainStation:
                 if self.map[player.position].isBought is False:
                     if input(self.map[player.position].name + ' kaufen? ') == 'Y':
                         player.buyStreet(self.map[player.position])
@@ -127,7 +127,7 @@ class Game():
                 elif self.map[player.position].isBought is True:
                     self.map[player.position].payRent(player)
 
-            elif type(self.map[player.position]) == monpoly.MonneyActionField:
+            elif type(self.map[player.position]) == monopoly.MonneyActionField:
                 self.map[player.position].action(player)
 
             player.printPOSITION()
@@ -154,20 +154,21 @@ class Game():
 
 class UIstart(QWidget):
 
-    def __init__(self):
+    def __init__(self, styleText: str):
         super().__init__()
 
         self.buildUI()
         self.initUI()
         self.changePlayerNumber()
 
+        self.setStyleSheet(styleText)
         self.show()
 
     def buildUI(self):
         self.setGeometry(100, 100, 400, 600)
-        self.setWindowTitle('Monpoly starten')
+        self.setWindowTitle('Monopoly starten')
 
-        self.lblHeader = QLabel('Monpoly (Alpha)', self)
+        self.lblHeader = QLabel('Monopoly (Alpha)', self)
         self.lblHeader.setFont(QFont('Arial', 16))
         self.lblHeader.setAlignment(Qt.AlignTop)
 
@@ -296,12 +297,12 @@ class UImain(QWidget):
         self.initUI()
         self.updateUI()
 
-        self.ActivePlayer: monpoly.Player = game.getActivePlayer()
+        self.ActivePlayer: monopoly.Player = game.getActivePlayer()
         self.gbPlayers[self.ActivePlayer.playerID].setStyleSheet('QGroupBox:title { background-color: #cacccc; }')
 
     def buildUI(self):
         self.setGeometry(100, 100, 1280, 720)
-        self.setWindowTitle('Monpoly')
+        self.setWindowTitle('Monopoly')
 
         # layoutAction
 
@@ -351,13 +352,20 @@ class UImain(QWidget):
             z += 1
             x += 1
 
+        y += 1
+
+        self.matchfield = uiLib.Matchfield(game)
+
+        self.layout.addWidget(self.matchfield, 0, y, 2, 1)
+
         self.setLayout(self.layout)
 
     def initUI(self):
         self.btnRoll.clicked.connect(self.actionRoll)
         self.btnBuy.clicked.connect(self.actionBuy)
-        self.btnEnd.clicked.connect(self.actionEnd)
         self.btnBecomeFree.clicked.connect(self.actionBecomeFree)
+        self.btnTrade.clicked.connect(self.actionTrade)
+        self.btnEnd.clicked.connect(self.actionEnd)
 
     def updateUI(self):
         for player in game.players:
@@ -389,8 +397,9 @@ class UImain(QWidget):
                 # pay rent
                 if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                     if game.map[self.ActivePlayer.position].isBought:
-                        game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
-                        self.teLogger.setText("'{}' zahlt an '{}' ${} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent), self.teLogger.toPlainText()))
+                        if game.map[self.ActivePlayer.position].owner != self.ActivePlayer:
+                            game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
+                            self.teLogger.setText("'{}' zahlt an '{}' ${} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent), self.teLogger.toPlainText()))
 
                 # get/lose monney
                 elif game.map[self.ActivePlayer.position].function == 'ActionField':
@@ -419,10 +428,15 @@ class UImain(QWidget):
         self.updateUI()
 
     def actionBecomeFree(self):
-        self.ActivePlayer.becomeFree()
-        self.gbPlayers[self.ActivePlayer.playerID].lblPrisonV.setText('Nein')
-        self.teLogger.setText("'{}' ist wieder frei \n{}".format(self.ActivePlayer.name, self.teLogger.toPlainText()))
+        if self.ActivePlayer.intoPrison:
+            self.ActivePlayer.becomeFree()
+            self.gbPlayers[self.ActivePlayer.playerID].lblPrisonV.setText('Nein')
+            self.teLogger.setText("'{}' ist wieder frei \n{}".format(self.ActivePlayer.name, self.teLogger.toPlainText()))
+
         self.updateUI()
+
+    def actionTrade(self):
+        self.uitrade = UItrade(self.ActivePlayer)
 
     def actionEnd(self):
         """Player's move ends"""
@@ -437,3 +451,130 @@ class UImain(QWidget):
         self.gbPlayers[self.ActivePlayer.playerID].setStyleSheet('QGroupBox:title { background-color: #cacccc; }')
 
         self.updateUI()
+
+
+class UItrade(QWidget):
+    def __init__(self, ActivePlayer):
+        super().__init__()
+        self.ActivePlayer: monopoly.Player = ActivePlayer
+
+        self.playerList: list = []
+        for player in game.players:
+            self.playerList.append(player)
+        self.playerList.pop(self.ActivePlayer.playerID)
+
+        self.listPlayerLeft = [game.map[5], Monney(400)]
+        self.listPlayerRight = [game.map[11]]
+
+        self.buildUI()
+        self.initUI()
+        self.show()
+
+    def buildUI(self):
+        self.setGeometry(100, 100, 400, 400)
+        self.setWindowTitle('Handelsmenü')
+
+        # layout
+
+        self.lblActivePlayer = QLabel(self.ActivePlayer.name)
+
+        self.icoTrade = QLabel()
+        self.srcIconTrade = QPixmap("resources/icons/arrow.svg")
+        self.srcIconTrade = self.srcIconTrade.scaledToWidth(20)
+        self.srcIconTrade = self.srcIconTrade.scaledToHeight(20)
+        self.icoTrade.setPixmap(self.srcIconTrade)  # Icon made by Pixel perfect from www.flaticon.com
+
+
+        self.cboxSelectPlayer = QComboBox(self)
+        for player in self.playerList:
+            self.cboxSelectPlayer.addItem(player.name)
+
+        self.btnPlayerLeftAdd = QPushButton('+', self)
+        self.btnPlayerLeftRemove = QPushButton('-', self)
+
+        self.btnPlayerRightAdd = QPushButton('+', self)
+        self.btnPlayerRightRemove = QPushButton('-', self)
+
+        self.lwPlayerLeft = QListWidget()
+        self.lwPlayerRight = QListWidget()
+
+        self.btnTrade = QPushButton('Handeln', self)
+        self.btnCancel = QPushButton('Abbrechen', self)
+
+        self.layout = QGridLayout()
+        self.layout.addWidget(self.lblActivePlayer, 0, 0, 1, 2)
+
+        self.layout.addWidget(self.icoTrade, 0, 2, 1, 1,)
+
+        self.layout.addWidget(self.cboxSelectPlayer, 0, 3, 1, 2)
+
+        self.layout.addWidget(self.btnPlayerLeftAdd, 1, 0, 1, 1)
+        self.layout.addWidget(self.btnPlayerLeftRemove, 1, 1, 1, 1)
+
+        self.layout.addWidget(self.btnPlayerRightAdd, 1, 3, 1, 1)
+        self.layout.addWidget(self.btnPlayerRightRemove, 1, 4, 1, 1)
+
+        self.layout.addWidget(self.lwPlayerLeft, 2, 0, 1, 2)
+        self.layout.addWidget(self.lwPlayerRight, 2, 3, 1, 2)
+
+        self.layout.addWidget(self.btnTrade, 3, 0, 1, 2)
+        self.layout.addWidget(self.btnCancel, 3, 3, 1, 2)
+
+        self.setLayout(self.layout)
+
+    def initUI(self):
+        self.btnPlayerLeftAdd.clicked.connect(self.actionPlayerLeftAdd)
+        self.btnPlayerRightAdd.clicked.connect(self.actionPlayerRightAdd)
+        self.btnPlayerLeftRemove.clicked.connect(self.actionPlayerLeftRemove)
+        self.btnPlayerRightRemove.clicked.connect(self.actionPlayerRightRemove)
+
+        self.btnTrade.clicked.connect(self.actionTrade)
+        self.btnCancel.clicked.connect(self.actionCancel)
+
+
+        self.lwPlayerLeft.addItems(self.getNames(self.listPlayerLeft))
+        self.lwPlayerRight.addItems(self.getNames(self.listPlayerRight))
+
+    def actionPlayerLeftAdd(self):
+        pass
+
+    def actionPlayerLeftRemove(self):
+        self.listPlayerLeft = self.removeFromList(self.listPlayerLeft, self.lwPlayerLeft.currentItem().text())
+        self.lwPlayerLeft.clear()
+        self.lwPlayerLeft.addItems(self.getNames(self.listPlayerLeft))
+
+    def actionPlayerRightAdd(self):
+        pass
+
+    def actionPlayerRightRemove(self):
+        self.listPlayerRight = self.removeFromList(self.listPlayerRight, self.lwPlayerRight.currentItem().text())
+        self.lwPlayerRight.clear()
+        self.lwPlayerRight.addItems(self.getNames(self.listPlayerRight))
+
+    def actionTrade(self):
+        self.hide()
+
+    def actionCancel(self):
+        self.hide()
+
+    def getNames(self, list: list):
+        rList = []
+        for item in list:
+            rList.append(item.name)
+
+        return rList
+
+    def removeFromList(self, list: list, name: str):
+        x = 0
+        for item in list:
+            if item.name == name:
+                break
+            x += 1
+        list.pop(x)
+
+        return list
+
+class Monney():
+    def __init__(self, value):
+        self.name: str = '$ {}'.format(str(value))
+        self.value: int = value
