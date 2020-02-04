@@ -43,7 +43,7 @@ class Game():
         gruppeGrün = monopoly.FieldGroup('#0bc508')
         gruppeBlau = monopoly.FieldGroup('#0878e8', 2)
 
-        gruppeWerk = monopoly.FieldGroup('#737373', 2)
+        gruppeWerk = monopoly.FieldGroup('#6b6b6b', 2)
         gruppeBahnhof = monopoly.FieldGroup('#bfbebe', 4)
 
         self.map = [

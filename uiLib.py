@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QLabel, QGridLayout, QGroupBox, QWidget, QPushButton
-
-# print something
+import colour
 
 
 class QPlayerGroupBox(QGroupBox):
@@ -56,13 +55,49 @@ class Matchfield(QGroupBox):
                 x = 0
                 y += 1
 
-            self.matchfield.append(QPushButton(field.name, self))
+            # self.matchfield.append(QPushButton(field.name, self))
+            # if field.function == 'AbleToBuyField':
+            #    self.matchfield[z].setStyleSheet('background-color: {};'.format(field.streetGroup.color))
+
             if field.function == 'AbleToBuyField':
-                self.matchfield[z].setStyleSheet('background-color: {};'.format(field.streetGroup.color))
-            # else:
-            #    self.matchfield.append(QLabel(field.name))
+                self.matchfield.append(Matchfield_SubField(field.name, field.streetGroup.color))
+            else:
+                self.matchfield.append(Matchfield_SubField(field.name))
+
+
             self.layout.addWidget(self.matchfield[z], x, y)
             z += 1
             x += 1
 
         self.setLayout(self.layout)
+
+class Matchfield_SubField(QWidget):
+    def __init__(self, name, color=''):
+        super().__init__()
+        self.initUI(name, color)
+
+    def initUI(self, name, color):
+        self.layout = QGridLayout()
+
+        self.btnField = QPushButton(name, self)
+        self.btnField.setStyleSheet('background-color: {}; border 0; color: {}; border-radius: 3px; padding: 3px;'.format('grey' if color == '' else color, 'white' if self.getHcolor(color) < 0.45 else 'black'))
+        self.lblOwner = QLabel()
+        self.lblOwner.setStyleSheet('background-color: blue; height: 3px; width: 100%; min-height: 3px; max-height: 3px;')
+        self.lblPlayer = QLabel()
+        self.lblPlayer.setStyleSheet('background-color: red; height: 3px; width: 100%; min-height: 3px; max-height: 3px;')
+
+        self.layout.addWidget(self.btnField, 1, 1)
+        self.layout.addWidget(self.lblOwner, 2, 1)
+        self.layout.addWidget(self.lblPlayer, 3, 1)
+
+        self.setLayout(self.layout)
+
+    def getHcolor(self, colorHEX):
+        color = colour.Color(colorHEX)
+        return color.get_hsl()[2]
+
+    def changelblOwner(self, owner: Player):
+        pass
+
+    def changelblPlayer(self, player: Player):
+        pass
