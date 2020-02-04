@@ -96,8 +96,8 @@ class Matchfield_SubField(QWidget):
         color = colour.Color(colorHEX)
         return color.get_hsl()[2]
 
-    def changelblOwner(self, owner: Player):
+    def changelblOwner(self, owner):
         pass
 
-    def changelblPlayer(self, player: Player):
+    def changelblPlayer(self, player):
         pass
