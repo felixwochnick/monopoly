@@ -4,18 +4,25 @@ by Felix Wochnick (2019)
 '''
 
 import random
+import colour
+
+def getHcolor(colorHEX):
+    color = colour.Color(colorHEX)
+    return color.get_hsl()[2]
 
 
 class Player():
     """Player for monopoly"""
 
-    def __init__(self, name: str, playerID: int, asset: int = 2000):
+    def __init__(self, name: str, color: str, playerID: int, asset: int = 2000):
         self.name = name
+        self.color = color
         self.playerID = playerID
         self.asset = asset
         self.property = []
         self.position: int = 0
         self.rolled = False
+        self.haveDoublets = False
         self.rolledInt = 0
         self.intoPrison = False
 
@@ -213,6 +220,8 @@ class TrainStation(Field):
 
         self.currentRent = self.rent1
 
+        self.mortgage = 100
+
         self.streetGroup = trainStationGroup
         self.GroupPosition = GroupPosition
 
@@ -247,6 +256,8 @@ class Factory(Field):
 
         self.costs: int = 150
 
+        self.mortgage = 75
+
         self.streetGroup = factoryGroup
         self.GroupPosition = GroupPosition
 
@@ -261,6 +272,7 @@ class Factory(Field):
         rent = player.rolledInt * 4
         self.owner.getMonney(rent)
         player.loseMonney(rent)
+        return rent
 
 
 class MonneyActionField(Field):

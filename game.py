@@ -8,8 +8,8 @@ from PyQt5.QtCore import Qt
 
 
 class DisplayPlayer(monopoly.Player):
-    def __init__(self, name: str, playerID: int):
-        super().__init__(name, playerID)
+    def __init__(self, name: str, color: str, playerID: int):
+        super().__init__(name, color, playerID)
 
     def printPROPERTY(self):
         for item in self.property:
@@ -26,11 +26,12 @@ class Game():
     """Maingame"""
 
     def __init__(self, numberOFplayers: int, nameOFplayers: list):
+        self.colorPlayers = ['#8e04f7', '#f30448', '#f7d41a', '#57d20a']
         self.players = []
         self.ActivePlayer: monopoly.Player
 
         while len(self.players) < numberOFplayers:
-            self.players.append(DisplayPlayer(nameOFplayers[len(self.players)], len(self.players)))
+            self.players.append(DisplayPlayer(nameOFplayers[len(self.players)], self.colorPlayers[len(self.players)], len(self.players)))
 
         self.ActivePlayer = self.players[0]
 
@@ -347,7 +348,7 @@ class UImain(QWidget):
             if x > 1:
                 x = 0
                 y += 1
-            self.gbPlayers.append(uiLib.QPlayerGroupBox(game.players[z].name))
+            self.gbPlayers.append(uiLib.QPlayerGroupBox(game.players[z].name, game.players[z].color))
             self.layout.addWidget(self.gbPlayers[z], x, y)
             z += 1
             x += 1
@@ -355,6 +356,7 @@ class UImain(QWidget):
         y += 1
 
         self.matchfield = uiLib.Matchfield(game)
+        self.matchfield.refreshMatchfield()
 
         self.layout.addWidget(self.matchfield, 0, y, 2, 1)
 
@@ -373,41 +375,48 @@ class UImain(QWidget):
             gbPlayerActive.lblNameV.setText(player.name)
             gbPlayerActive.lblPositionV.setText(player.getPOSITION())
             gbPlayerActive.lblAssetV.setText(str(player.asset))
-            propertyStr = ''
-            for property in player.property:
-                propertyStr += property.name + ', '
-            gbPlayerActive.lblPropertyV.setText(propertyStr)
-        # self.gbPlayers[0].lblNameV.setText(str(type(game.map[0])))
-
+            # propertyStr = ''
+            # for property in player.property:
+            #    propertyStr += property.name + ', '
+            # gbPlayerActive.lblPropertyV.setText(propertyStr)
+        self.matchfield.refreshMatchfield()
 
     def actionRoll(self):
         """Player rolls and goes to the rolled Field"""
         if not self.ActivePlayer.intoPrison:
-            if not self.ActivePlayer.rolled:
-                cube1, cube2, event = self.ActivePlayer.move()
+            if not self.ActivePlayer.rolled or self.ActivePlayer.haveDoublets:
+                *cube, event = self.ActivePlayer.move()
                 if event == 'goONstart':
-                    self.teLogger.setText("'{}' würfelt {} und bekommt $400, weil er auf Los gekommen ist\n{}".format(self.ActivePlayer.name, str(cube1 + cube2), self.teLogger.toPlainText()))
+                    self.teLogger.setText("'{}' würfelt {} und bekommt ¢ 400, weil er auf Los gekommen ist\n{}".format(self.ActivePlayer.name, str(cube[0] + cube[1]), self.teLogger.toPlainText()))
                 elif event == 'goOVERstart':
-                    self.teLogger.setText("'{}' würfelt {} und bekommt $200, weil er über Los gekommen ist\n{}".format(self.ActivePlayer.name, str(cube1 + cube2), self.teLogger.toPlainText()))
+                    self.teLogger.setText("'{}' würfelt {} und bekommt ¢ 200, weil er über Los gekommen ist\n{}".format(self.ActivePlayer.name, str(cube[0] + cube[1]), self.teLogger.toPlainText()))
                 else:
-                    self.teLogger.setText("'{}' würfelt {} \n{}".format(self.ActivePlayer.name, str(cube1 + cube2), self.teLogger.toPlainText()))
-                # if not cube1 == cube2: # TODO: Pasch programieren
-                self.ActivePlayer.rolled = True
+                    self.teLogger.setText("'{}' würfelt {} \n{}".format(self.ActivePlayer.name, str(cube[0] + cube[1]), self.teLogger.toPlainText()))
+                if cube[0] == cube[1]:
+                    self.teLogger.setText("'{}' darf nochmal würfeln, da er einen Pasch gewürfelt hat\n{}".format(self.ActivePlayer.name, self.teLogger.toPlainText()))
+                    self.ActivePlayer.rolled = True
+                    self.ActivePlayer.haveDoublets = True
+                else:
+                    self.ActivePlayer.rolled = True
+                    self.ActivePlayer.haveDoublets = False
 
                 # pay rent
                 if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
-                    if game.map[self.ActivePlayer.position].isBought:
-                        if game.map[self.ActivePlayer.position].owner != self.ActivePlayer:
+                    if game.map[self.ActivePlayer.position].isBought and game.map[self.ActivePlayer.position].owner != self.ActivePlayer:
+                        if type(game.map[self.ActivePlayer.position]) == monopoly.Factory:
+                            rent = game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
+                            self.teLogger.setText("'{}' zahlt an '{}' ¢ {} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(rent), self.teLogger.toPlainText()))
+                        else:
                             game.map[self.ActivePlayer.position].payRent(self.ActivePlayer)
-                            self.teLogger.setText("'{}' zahlt an '{}' ${} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent), self.teLogger.toPlainText()))
+                            self.teLogger.setText("'{}' zahlt an '{}' ¢ {} Miete\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].owner.name, str(game.map[self.ActivePlayer.position].currentRent), self.teLogger.toPlainText()))
 
                 # get/lose monney
                 elif game.map[self.ActivePlayer.position].function == 'ActionField':
                     game.map[self.ActivePlayer.position].action(self.ActivePlayer)
                     if game.map[self.ActivePlayer.position].getMonney > 0:
-                        self.teLogger.setText("'{}' bekommt von der Bank ${} ({})\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].getMonney, game.map[self.ActivePlayer.position].name, self.teLogger.toPlainText()))
+                        self.teLogger.setText("'{}' bekommt von der Bank ¢ {} ({})\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].getMonney, game.map[self.ActivePlayer.position].name, self.teLogger.toPlainText()))
                     else:
-                        self.teLogger.setText("'{}' zahlt an die Bank ${} ({})\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].loseMonney, game.map[self.ActivePlayer.position].name, self.teLogger.toPlainText()))
+                        self.teLogger.setText("'{}' zahlt an die Bank ¢ {} ({})\n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].loseMonney, game.map[self.ActivePlayer.position].name, self.teLogger.toPlainText()))
 
                 # go into prison
                 elif self.ActivePlayer.position == 30:
@@ -423,8 +432,8 @@ class UImain(QWidget):
             if game.map[self.ActivePlayer.position].function == 'AbleToBuyField':
                 if not game.map[self.ActivePlayer.position].isBought:
                     self.ActivePlayer.buyStreet(game.map[self.ActivePlayer.position])
-                    self.teLogger.setText("'{}' kauft {} für ${} \n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].name, game.map[self.ActivePlayer.position].costs, self.teLogger.toPlainText()))
-
+                    self.teLogger.setText("'{}' kauft {} für ¢ {} \n{}".format(self.ActivePlayer.name, game.map[self.ActivePlayer.position].name, game.map[self.ActivePlayer.position].costs, self.teLogger.toPlainText()))
+                    self.matchfield.matchfield[self.ActivePlayer.position].changelblOwner(self.ActivePlayer)
         self.updateUI()
 
     def actionBecomeFree(self):
@@ -576,5 +585,5 @@ class UItrade(QWidget):
 
 class Monney():
     def __init__(self, value):
-        self.name: str = '$ {}'.format(str(value))
+        self.name: str = '¢ {}'.format(str(value))
         self.value: int = value
