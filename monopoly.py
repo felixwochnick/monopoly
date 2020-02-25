@@ -4,18 +4,25 @@ by Felix Wochnick (2019)
 '''
 
 import random
+import colour
+
+def getHcolor(colorHEX):
+    color = colour.Color(colorHEX)
+    return color.get_hsl()[2]
 
 
 class Player():
     """Player for monopoly"""
 
-    def __init__(self, name: str, playerID: int, asset: int = 2000):
+    def __init__(self, name: str, color: str, playerID: int, asset: int = 2000):
         self.name = name
+        self.color = color
         self.playerID = playerID
         self.asset = asset
         self.property = []
         self.position: int = 0
         self.rolled = False
+        self.haveDoublets = False
         self.rolledInt = 0
         self.intoPrison = False
 
@@ -47,8 +54,6 @@ class Player():
 
         self.position = position
 
-        return True
-
     def goOVERstart(self):
         self.asset += 200
 
@@ -62,9 +67,6 @@ class Player():
             street.isBought = True
             street.owner = self
             street.updateGroup()
-            return True
-        else:
-            return False
 
     def sellStreet(self, street):
         if street in self.property:
@@ -76,15 +78,12 @@ class Player():
 
     def getMonney(self, monney: int):
         self.asset += monney
-        return True
 
     def loseMonney(self, monney: int):
         if self.asset < monney:
             self.asset -= monney
-            return False
         else:
             self.asset -= monney
-            return True
 
     def goINTOprison(self):
         self.moveTo(10, True)
@@ -101,9 +100,6 @@ class Field():
     def __init__(self, name: str):
         self.name = name
         self.function = 'Field'
-
-    def getSelf(self):
-        return self
 
 
 class FieldGroup():
@@ -213,6 +209,8 @@ class TrainStation(Field):
 
         self.currentRent = self.rent1
 
+        self.mortgage = 100
+
         self.streetGroup = trainStationGroup
         self.GroupPosition = GroupPosition
 
@@ -247,6 +245,8 @@ class Factory(Field):
 
         self.costs: int = 150
 
+        self.mortgage = 75
+
         self.streetGroup = factoryGroup
         self.GroupPosition = GroupPosition
 
@@ -261,6 +261,7 @@ class Factory(Field):
         rent = player.rolledInt * 4
         self.owner.getMonney(rent)
         player.loseMonney(rent)
+        return rent
 
 
 class MonneyActionField(Field):
