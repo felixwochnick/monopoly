@@ -54,8 +54,6 @@ class Player():
 
         self.position = position
 
-        return True
-
     def goOVERstart(self):
         self.asset += 200
 
@@ -69,9 +67,6 @@ class Player():
             street.isBought = True
             street.owner = self
             street.updateGroup()
-            return True
-        else:
-            return False
 
     def sellStreet(self, street):
         if street in self.property:
@@ -83,15 +78,12 @@ class Player():
 
     def getMonney(self, monney: int):
         self.asset += monney
-        return True
 
     def loseMonney(self, monney: int):
         if self.asset < monney:
             self.asset -= monney
-            return False
         else:
             self.asset -= monney
-            return True
 
     def goINTOprison(self):
         self.moveTo(10, True)
@@ -108,9 +100,6 @@ class Field():
     def __init__(self, name: str):
         self.name = name
         self.function = 'Field'
-
-    def getSelf(self):
-        return self
 
 
 class FieldGroup():

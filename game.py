@@ -1,7 +1,7 @@
 import sys
 import monopoly
 import uiLib
-from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit, QListWidget
+from PyQt5.QtWidgets import QWidget, QLabel, QComboBox, QPushButton, QGridLayout, QLineEdit, QMessageBox, QTextEdit, QListWidget, QMainWindow
 from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import Qt
 
@@ -117,6 +117,7 @@ class Game():
             monopoly.Street('Schlossallee', gruppeBlau, 1, 400, 50, 200, 600, 1400, 1700, 2000, 200, 200),       # Schlossallee
         ]
 
+    '''
     def mainLoop(self):
         for player in self.players:
             player.move()
@@ -142,6 +143,7 @@ class Game():
             print('')
 
         self.mainLoop()
+    '''
 
     def changeActivePlayer(self):
         if self.ActivePlayer.playerID + 1 >= len(self.players):
