@@ -12,7 +12,7 @@ def getHcolor(colorHEX):
 
 
 class Player():
-    """Player for monopoly"""
+    """Player class"""
 
     def __init__(self, name: str, color: str, playerID: int, asset: int = 2000):
         self.name = name
@@ -95,7 +95,7 @@ class Player():
 
 
 class Field():
-    """Field class for Monopoly"""
+    """Field class"""
 
     def __init__(self, name: str):
         self.name = name
@@ -128,7 +128,7 @@ class FieldGroup():
 
 
 class Street(Field):
-    """Street class for Monopoly"""
+    """Street class"""
 
     def __init__(self, name: str, streetGroup: FieldGroup, GroupPosition: int, costs: int, rent: int, rentW1H: int, rentW2H: int, rentW3H: int, rentW4H: int, rentWH: int, costsTObuild: int, mortgage: int):
         super().__init__(name)
@@ -195,7 +195,7 @@ class Street(Field):
 
 
 class TrainStation(Field):
-    """docstring for Train Station."""
+    """Train Station class"""
 
     def __init__(self, name: str, trainStationGroup: FieldGroup, GroupPosition: int):
         super().__init__(name)
@@ -265,8 +265,7 @@ class Factory(Field):
 
 
 class MonneyActionField(Field):
-    """docstring for MonneyField."""
-
+    """MonneyField."""
     def __init__(self, name: str, getMonney: int, loseMonney: int):
         super().__init__(name)
         self.function = 'ActionField'
@@ -274,6 +273,23 @@ class MonneyActionField(Field):
         self.getMonney = getMonney
         self.loseMonney = loseMonney
 
-    def action(self, player):
+    def action(self, player: Player):
         player.getMonney(self.getMonney)
         player.loseMonney(self.loseMonney)
+
+class EventField(Field):
+    def __init__(self):
+        super().__init__('Ereignisfeld')
+        self.function = 'ActionField'
+
+    def action(player: Player):
+        pass
+
+
+class CommunityField(Field)
+    def __init__(self):
+        super().__init__('Gemeinschaftsfeld')
+        self.function = 'ActionField'
+
+    def action(player):
+        pass

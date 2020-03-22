@@ -3,7 +3,7 @@ A Monopoly version with Python
 
 Python version: 3.8.0
 
-Required library: PyQt5 
+Required library: PyQt5, colour
 
 suported language: German
 
@@ -13,9 +13,9 @@ suported language: German
 There are commands mainly for Linux.
 
 ```bash
-git clone https://github.com/quantcom-source/monopoly.git
-cd monopoly
-python main.py
+$ git clone https://github.com/quantcom-source/monopoly.git
+$ cd monopoly
+$ python main.py
 ```
 > If 'python' not works, try 'python3'.
 
@@ -25,5 +25,5 @@ python main.py
 There are commands mainly for Linux.
 
 ```bash
-sudo pip install PyQt5
+$ sudo pip install PyQt5
 ```

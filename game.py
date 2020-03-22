@@ -8,6 +8,9 @@ from PyQt5.QtCore import Qt
 
 
 class DisplayPlayer(monopoly.Player):
+    """
+    Player class with some more attributes
+    """
     def __init__(self, name: str, color: str, playerID: int):
         super().__init__(name, color, playerID)
 
@@ -23,7 +26,11 @@ class DisplayPlayer(monopoly.Player):
 
 
 class Game():
-    """Maingame"""
+    """
+    Main class of the Game
+
+    This class contains important requirements
+    """
 
     def __init__(self, numberOFplayers: int, nameOFplayers: list):
         self.colorPlayers = ['#8e04f7', '#f30448', '#f7d41a', '#57d20a']
@@ -117,34 +124,6 @@ class Game():
             monopoly.Street('Schlossallee', gruppeBlau, 1, 400, 50, 200, 600, 1400, 1700, 2000, 200, 200),       # Schlossallee
         ]
 
-    '''
-    def mainLoop(self):
-        for player in self.players:
-            player.move()
-            if type(self.map[player.position]) == monopoly.Street or type(self.map[player.position]) == monopoly.TrainStation:
-                if self.map[player.position].isBought is False:
-                    if input(self.map[player.position].name + ' kaufen? ') == 'Y':
-                        player.buyStreet(self.map[player.position])
-
-                elif self.map[player.position].isBought is True:
-                    self.map[player.position].payRent(player)
-
-            elif type(self.map[player.position]) == monopoly.MonneyActionField:
-                self.map[player.position].action(player)
-
-            player.printPOSITION()
-            player.printASSET()
-            player.printPROPERTY()
-            commad = input('> Game ~~ ' + player.name + ' >> ')
-
-            if commad == 'exit':
-                sys.exit()
-
-            print('')
-
-        self.mainLoop()
-    '''
-
     def changeActivePlayer(self):
         if self.ActivePlayer.playerID + 1 >= len(self.players):
             self.ActivePlayer = self.players[0]
@@ -156,6 +135,9 @@ class Game():
 
 
 class UIstart(QWidget):
+    """
+    UI class which starts at first
+    """
 
     def __init__(self, styleText: str):
         super().__init__()
@@ -263,6 +245,7 @@ class UIstart(QWidget):
             self.lePlayerName3.show()
 
     def checkPlayerHaveNames(self):
+        """check if all players have a name"""
         if self.cboxPlayerNumber.currentText() == '2':
             if self.lePlayerName0.text() == '' or self.lePlayerName1.text() == '':
                 return False
@@ -278,21 +261,27 @@ class UIstart(QWidget):
         return True
 
     def startGame(self):
-        if not self.checkPlayerHaveNames():
+        if not self.checkPlayerHaveNames()):
+            # start a MessageBox, which inform the user that all players haven't a name
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setText('Bitte geben sie die Namen für alle Spieler an!')
             msg.setWindowTitle("Error")
             msg.exec_()
-            return ''
+            return None
+
         global uiMain, game
-        game = Game(int(self.cboxPlayerNumber.currentText()), [self.lePlayerName0.text(), self.lePlayerName1.text(), self.lePlayerName2.text(), self.lePlayerName3.text()])
-        uiMain = UImain()
-        self.hide()
-        uiMain.show()
+        game = Game(int(self.cboxPlayerNumber.currentText()), [self.lePlayerName0.text(), self.lePlayerName1.text(), self.lePlayerName2.text(), self.lePlayerName3.text()]) # init Game()
+        uiMain = UImain() # init UImain()
+        self.hide() # close self
+        uiMain.show() # show uiMain
 
 
 class UImain(QWidget):
+    """
+    UImain is the UI with the gamelogic.
+    Also it contains functions of the game
+    """
 
     def __init__(self):
         super().__init__()
@@ -465,6 +454,10 @@ class UImain(QWidget):
 
 
 class UItrade(QWidget):
+    """
+    UItrade is started by 'UImain.actionTrade()'
+    With this Window you can trade with other Players
+    """
     def __init__(self, ActivePlayer):
         super().__init__()
         self.ActivePlayer: monopoly.Player = ActivePlayer
@@ -586,6 +579,9 @@ class UItrade(QWidget):
         return list
 
 class Monney():
+    """
+    This class is a helper class of UItrade
+    """
     def __init__(self, value):
         self.name: str = '¢ {}'.format(str(value))
         self.value: int = value
